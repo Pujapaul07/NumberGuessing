@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess the Number</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #container {
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    p {
+      color: #555;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <h1>Guess the Number Game</h1>
+  <p>Enter a number between 1 and 100:</p>
+  <input type="number" id="userInput" min="1" max="100">
+  <button onclick="checkGuess()">Submit Guess</button>
+  <p id="message"></p>
+</div>
+
+<script>
+  // Generate a random number between 1 and 100
+  const randomNumber = Math.floor(Math.random() * 100) + 1;
+  let attemptsLeft = 10;
+
+  function checkGuess() {
+    const userInput = document.getElementById('userInput').value;
+    const messageElement = document.getElementById('message');
+
+    if (userInput === '') {
+      setMessage('Please enter a number.');
+    } else {
+      const userGuess = parseInt(userInput);
+
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+        setMessage('Please enter a valid number between 1 and 100.');
+      } else {
+        attemptsLeft--;
+
+        if (userGuess === randomNumber) {
+          setMessage(`Congratulations! You guessed the correct number (${randomNumber}). You won in ${10 - attemptsLeft} attempts.`);
+          disableInputAndButton();
+        } else {
+          const difference = Math.abs(randomNumber - userGuess);
+          let hint = '';
+
+          if (difference >= 20) {
+            hint = userGuess < randomNumber ? 'Too far, the number is greater.' : 'Too far, the number is lesser.';
+          } else {
+            hint = userGuess < randomNumber ? 'Too close, the number is greater.' : 'Too close, the number is lesser.';
+          }
+
+          if (attemptsLeft > 0) {
+            setMessage(`Sorry, that's not correct. ${hint} Attempts left: ${attemptsLeft}.`);
+          } else {
+            setMessage(`Sorry, you've run out of attempts. The correct number was ${randomNumber}. You lose.`);
+            disableInputAndButton();
+          }
+        }
+      }
+    }
+  }
+
+  function setMessage(message) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = message;
+  }
+
+  function disableInputAndButton() {
+    document.getElementById('userInput').disabled = true;
+    document.querySelector('button').disabled = true;
+  }
+</script>
+
+</body>
+</html>
